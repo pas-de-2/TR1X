@@ -336,18 +336,17 @@ void Lara_HandleUnderwater(ITEM_INFO *item, COLL_INFO *coll)
 
     g_LaraStateRoutines[item->current_anim_state](item, coll);
 
-    if (item->rot.z >= -(2 * LARA_LEAN_UNDO)
-        && item->rot.z <= 2 * LARA_LEAN_UNDO) {
+    if (item->rot.z >= -LARA_LEAN_UNDO_UW && item->rot.z <= LARA_LEAN_UNDO_UW) {
         item->rot.z = 0;
     } else if (item->rot.z < 0) {
-        item->rot.z += 2 * LARA_LEAN_UNDO;
+        item->rot.z += LARA_LEAN_UNDO_UW;
     } else {
-        item->rot.z -= 2 * LARA_LEAN_UNDO;
+        item->rot.z -= LARA_LEAN_UNDO_UW;
     }
+    CLAMP(item->rot.z, -LARA_LEAN_MAX_UW, LARA_LEAN_MAX_UW);
 
     if (g_Config.enable_tr2_swimming) {
         CLAMP(item->rot.x, -85 * PHD_DEGREE, 85 * PHD_DEGREE);
-        CLAMP(item->rot.z, -LARA_LEAN_MAX_UW, LARA_LEAN_MAX_UW);
 
         if (g_Lara.turn_rate < -LARA_TURN_UNDO) {
             g_Lara.turn_rate += LARA_TURN_UNDO;
@@ -359,7 +358,6 @@ void Lara_HandleUnderwater(ITEM_INFO *item, COLL_INFO *coll)
         item->rot.y += g_Lara.turn_rate;
     } else {
         CLAMP(item->rot.x, -100 * PHD_DEGREE, 100 * PHD_DEGREE);
-        CLAMP(item->rot.z, -LARA_LEAN_MAX_UW, LARA_LEAN_MAX_UW);
     }
 
     if (g_Lara.current_active && g_Lara.water_status != LWS_CHEAT) {
